@@ -1,28 +1,20 @@
-const http = require('http')
+const express = require('express')
+const path = require('path')
+const app = express()
 
-const {readFileSync} = require('fs')
+app.use(express.static('./public'))
 
-const homePage = readFileSync('./index.html') 
-
-const server = http.createServer((req,res)=>{
-    const url  = req.url
-
-    if(url=='/'){
-        res.writeHead(200, { 'Content-Type': 'text/html' })
-       res.write(homePage)
-        res.end()
-    }else if(url==='/about'){
-        res.writeHead(200,{'Content-Type': 'application/json'})
-        res.write('<h1>this is about page</h1>')
-        res.end()
-    }else{
-        res.writeHead(404,{'Content-Type': 'application/json'})
-        res.write('<h1>this is error page</h1>')
-        res.end()
-
-    }
-
-
+app.get('/',(req,res)=>{
+    res.sendFile(path.resolve(__dirname,'./navbar-app/index.html'))
 })
 
-server.listen(5000)
+app.all('*',(req,res)=>{
+    console.log(req.url);
+ 
+res.status(404).send('<h1>404 Page Not Found</h1>');
+})
+
+app.listen(5000,()=>{
+    console.log('listen in 5000');
+    
+})
